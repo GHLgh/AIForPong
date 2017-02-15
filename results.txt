@@ -1,0 +1,33 @@
+Using alpha = 0.4, gamma = 0.95, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 15, highest score = 24
+
+Using alpha = 0.2, gamma = 0.95, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 20, highest score = 47
+
+Using alpha = 0.6, gamma = 0.95, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 3, highest score = 7
+
+Using alpha = 0.1, gamma = 0.95, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 14, highest score = 40
+
+Using alpha = 0.2, gamma = 0.55, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 13, highest score = 31
+
+Using alpha = 0.2, gamma = 0.25, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 10, highest score = 29
+
+Using alpha = 0.2, gamma = 0.75, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 17, highest score = 23
+
+Using alpha = 0.2, gamma = 0.99, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 15, highest score = 20
+
+Using alpha = 0.2, gamma = 0.95, epsilon = 0.1 and number of games = 100000
+For playing 5 consecutive games, average score = 13, highest score = 33
+
+Using alpha = 0.2, gamma = 0.95, epsilon = 0.2 and number of games = 100000
+For playing 5 consecutive games, average score = 13, highest score = 27
+
+Using alpha = 0.2, gamma = 0.9, epsilon = 0.04 and number of games = 100000
+For playing 5 consecutive games, average score = 22, highest score = 40
+

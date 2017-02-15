@@ -9,10 +9,10 @@ if __name__ == "__main__":
     gamma_value = 0.95
     epsilon_value = 0.04
     if(len(sys.argv) == 4):
-        alpha_value = int(sys.argv[1])
-        gamma_value = int(sys.argv[2])
-        epsilon_value = int(sys.argv[3])
-    num_games = 10000
+        alpha_value = float(sys.argv[1])
+        gamma_value = float(sys.argv[2])
+        epsilon_value = float(sys.argv[3])
+    num_games = 100000
     simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value)
     target = open("results.txt", 'a')
 
