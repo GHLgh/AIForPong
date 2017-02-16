@@ -107,11 +107,11 @@ class MDPMultiple:
         if dBallX >= 12 or dBallX <= -1:
             dBallX = 12
         else:
-            dBallX = int(math.fabs(dBallX - paddle_index * 11))
+            dBallX = int(math.fabs(dBallX + (paddle_index-1) * 11))
 
         dBallY = int(math.floor(12 * self.ball_y))
 
-        dVelocityX = 1 if (self.velocity_x - 2 * paddle_index) > 0 else -1
+        dVelocityX = 1 if (self.velocity_x * ((2 * paddle_index)-1)) > 0 else -1
         if self.velocity_y > 0.015:
             dVelocityY = 1
         elif self.velocity_y < -0.015:
@@ -119,7 +119,7 @@ class MDPMultiple:
         else:
             dVelocityY = 0
 
-        dPaddleY = math.floor(12 * self.paddles[paddle_index] / (1 - self.paddle_height))
+        dPaddleY = int(math.floor(12 * self.paddles[paddle_index] / (1 - self.paddle_height)))
         if self.paddles[paddle_index] == 1 - self.paddle_height:
             dPaddleY = 11
 

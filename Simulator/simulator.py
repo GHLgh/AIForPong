@@ -81,12 +81,20 @@ class Simulator:
         '''
         # Your Code Goes Here!
         totalScore = 0
+	continueOverTen = 0
+	count = -1
         for i in range(self.num_games):
             score = self.play_game(True) if multiplePaddles == False else self.play_game_paddles(True)
             totalScore += score
             if (i+1)%100 == 0:
+		if (totalScore/100) >= 10:
+		    continueOverTen += 1
+		    if continueOverTen >= 3 and count == -1:
+			count = i
                 print("Average score over last 100 runs: {0}. Ran {1} training, {2} runs remaining".format(totalScore/100,i+1, self.num_games - i-1))
                 totalScore = 0
+	print(count)
+	print("\n")
         pass
 
     def play_game_paddles(self, training):
@@ -97,7 +105,6 @@ class Simulator:
         environment = MDPMultiple()
         score = 0
         currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
-	print(currentStates)
         currentRewards = environment.getReward()
 
         while(currentRewards[0] != -1 and currentRewards[1] != -1):
@@ -107,6 +114,7 @@ class Simulator:
             lastStates = currentStates
             lastRewards = currentRewards
             actionsSelected = [self.f_function(currentStates[0], training),self.f_function(currentStates[1], training)]
+            #print("S1:{0} A1:{1}; S2:{2} A2:{3}".format(currentStates[0], actionsSelected[0],currentStates[1], actionsSelected[1]))
             environment.simulate_one_time_step(actionsSelected)
             currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
 
@@ -116,7 +124,7 @@ class Simulator:
             currentRewards = environment.getReward()
 
             # special casse to update special stage
-            if currentStates[0][0] == 12 or currentStates[1][0]:
+            if currentStates[0][0] == 12 or currentStates[1][0] == 12:
                 self.QTable[-1] += self.alpha_value * (currentRewards[0] + currentRewards[1] - self.QTable[-1])
 
             '''
@@ -124,6 +132,7 @@ class Simulator:
                 time.sleep(0.05)
                 self.draw_gui(currentState, lastState)
             '''
+	#print("End game\n")
         return score
     
     def play_game(self, training):

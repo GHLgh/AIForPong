@@ -32,6 +32,9 @@ if __name__ == "__main__":
     num_games = 100000
     outputFileName = "results.txt"
     outputMode = 'w'
+
+    two = False
+
     if(len(sys.argv) != 2):
 	outputMode = 'a'
 	if(6 >= len(sys.argv) >= 5):
@@ -41,7 +44,8 @@ if __name__ == "__main__":
 	    num_games = int(sys.argv[4])
 	parameterList.append((alpha_value, gamma_value, epsilon_value, num_games));
 	if len(sys.argv) == 6:
-	    outputFileName = sys.argv[5]
+	    two = True
+	    #outputFileName = sys.argv[5]
     elif len(sys.argv) == 2:
 	readInputFile(parameterList, sys.argv[1]);
 	outputFileName = "out_" + sys.argv[1];
@@ -52,7 +56,7 @@ if __name__ == "__main__":
 	gamma_value = parameters[1]
 	epsilon_value = parameters[2]
 	num_games = parameters[3]
-    	simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value, True)
+    	simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value, two)
 
     	totalScore = 0
     	highestScore = 0
