@@ -29,7 +29,7 @@ class Simulator:
                             for action in range(3):
                                 key = tuple([ballX, ballY, velocityX, velocityY, paddleY, action])
                                 self.QTable[key] = 0
-        self.QTable[-1] = -1
+        self.QTable[-1] = 0
         self.train_agent()
 
         '''
@@ -108,6 +108,10 @@ class Simulator:
             currentState = environment.discretize_state()
             self.updateQTable(lastState, actionSelected, lastReward, currentState)
             currentReward = environment.getReward()
+
+	    # special casse to update special stage
+	    if currentState[0] == 12:
+		self.QTable[-1] += self.alpha_value * (currentReward - self.QTable[-1])
 
             '''
             if training == False:
