@@ -31,3 +31,6 @@ For playing 5 consecutive games, average score = 13, highest score = 27
 Using alpha = 0.2, gamma = 0.9, epsilon = 0.04 and number of games = 100000
 For playing 5 consecutive games, average score = 22, highest score = 40
 
+Using alpha = 0.2, gamma = 0.2, epsilon = 0.2 and number of games = 1000
+For playing 5 consecutive games, average score = 1, highest score = 1
+

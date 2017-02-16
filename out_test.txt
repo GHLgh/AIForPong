@@ -1,0 +1,6 @@
+Using alpha = 0.2, gamma = 0.95, epsilon = 0.004 and number of games = 1000
+For playing 5 consecutive games, average score = 1, highest score = 4
+
+Using alpha = 0.4, gamma = 0.9, epsilon = 0.01 and number of games = 5000
+For playing 5 consecutive games, average score = 4, highest score = 9
+
