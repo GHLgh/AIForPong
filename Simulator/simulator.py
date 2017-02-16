@@ -82,14 +82,14 @@ class Simulator:
         # Your Code Goes Here!
         totalScore = 0
         for i in range(self.num_games):
-            score = self.play_game(True) if multiplePaddles == False else self.play_game_paddles()
+            score = self.play_game(True) if multiplePaddles == False else self.play_game_paddles(True)
             totalScore += score
             if (i+1)%100 == 0:
                 print("Average score over last 100 runs: {0}. Ran {1} training, {2} runs remaining".format(totalScore/100,i+1, self.num_games - i-1))
                 totalScore = 0
         pass
 
-    def play_game_paddles(self):
+    def play_game_paddles(self, training):
         '''
         Simulate an actual game till the agent loses.
         '''
@@ -97,22 +97,27 @@ class Simulator:
         environment = MDPMultiple()
         score = 0
         currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
-        currentReward = environment.getReward()
-#TODO TODO
-        while(currentReward != -1):
-            if currentReward == 1:
+	print(currentStates)
+        currentRewards = environment.getReward()
+
+        while(currentRewards[0] != -1 and currentRewards[1] != -1):
+            if currentRewards[0] == 1 or currentRewards[1] == 1:
                 score += 1
-            lastState = currentState
-            lastReward = currentReward
-            actionSelected = self.f_function(currentState, training)
-            environment.simulate_one_time_step(actionSelected)
-            currentState = environment.discretize_state()
-            self.updateQTable(lastState, actionSelected, lastReward, currentState)
-            currentReward = environment.getReward()
+
+            lastStates = currentStates
+            lastRewards = currentRewards
+            actionsSelected = [self.f_function(currentStates[0], training),self.f_function(currentStates[1], training)]
+            environment.simulate_one_time_step(actionsSelected)
+            currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
+
+            self.updateQTable(lastStates[0], actionsSelected[0], lastRewards[0], currentStates[0])
+	    self.updateQTable(lastStates[1], actionsSelected[1], lastRewards[1], currentStates[1])
+
+            currentRewards = environment.getReward()
 
             # special casse to update special stage
-            if currentState[0] == 12:
-                self.QTable[-1] += self.alpha_value * (currentReward - self.QTable[-1])
+            if currentStates[0][0] == 12 or currentStates[1][0]:
+                self.QTable[-1] += self.alpha_value * (currentRewards[0] + currentRewards[1] - self.QTable[-1])
 
             '''
             if training == False:

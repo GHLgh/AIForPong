@@ -39,7 +39,7 @@ class MDPMultiple:
         self.velocity_x = velocity_x if velocity_x != None else 0.03
         self.velocity_y = velocity_y if velocity_y != None else 0.01
         self.paddles = [0.5, 0.5]
-        self.reward = 0
+        self.rewards = [0, 0]
     
     def simulate_one_time_step(self, actions_selected):
         '''
@@ -57,8 +57,8 @@ class MDPMultiple:
             self.paddles[i] += self.actions[actions_selected[i]]
             if self.paddles[i] < 0:
                 self.paddles[i] = 0
-            if(self.paddle[i] > (1 - self.paddle_height)):
-                self.paddle[i] = (1 - self.paddle_height)
+            if(self.paddles[i] > (1 - self.paddle_height)):
+                self.paddles[i] = (1 - self.paddle_height)
 
         if self.ball_y < 0:
             self.ball_y *= -1
@@ -74,9 +74,9 @@ class MDPMultiple:
                 self.velocity_y = self.velocity_y + random.uniform(-0.03, 0.03)
                 if math.fabs(self.velocity_x <= 0.03):
                     self.velocity_x = 0.04 if self.velocity_x > 0 else -0.04
-                self.reward = 1
+                self.rewards[0] = 1
             else:
-                self.reward = -1
+                self.rewards[0] = -1
 
         if self.ball_x > 1:
             if (self.paddles[1]+self.paddle_height) >= self.ball_y >= self.paddles[1]:
@@ -86,9 +86,9 @@ class MDPMultiple:
                 self.velocity_y = self.velocity_y + random.uniform(-0.03, 0.03)
                 if math.fabs(self.velocity_x <= 0.03):
                     self.velocity_x = 0.04 if self.velocity_x > 0 else -0.04
-                self.reward = 1
+                self.rewards[1] = 1
             else:
-                self.reward = -1
+                self.rewards[1] = -1
 
         # constraint velocity
         if math.fabs(self.velocity_x > 1):
@@ -126,6 +126,6 @@ class MDPMultiple:
         return tuple([dBallX, dBallY, dVelocityX, dVelocityY, dPaddleY])
 
     def getReward(self):
-        dReward = self.reward
-        self.reward = 0
-        return dReward
+        dRewards = self.rewards
+        self.rewards = [0,0]
+        return dRewards

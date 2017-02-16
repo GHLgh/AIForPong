@@ -52,7 +52,7 @@ if __name__ == "__main__":
 	gamma_value = parameters[1]
 	epsilon_value = parameters[2]
 	num_games = parameters[3]
-    	simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value)
+    	simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value, True)
 
     	totalScore = 0
     	highestScore = 0
@@ -61,7 +61,6 @@ if __name__ == "__main__":
             if score > highestScore:
             	highestScore = score
             totalScore += score
-            print(score)
 
 	resultForCurrentParameters = "Using alpha = {0}, gamma = {1}, epsilon = {2} and number of games = {3}\nFor playing 5 consecutive games, average score = {4}, highest score = {5}\n\n".format(alpha_value, gamma_value, epsilon_value, num_games, totalScore/5, highestScore)
         target.write(resultForCurrentParameters)
