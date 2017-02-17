@@ -60,12 +60,12 @@ if __name__ == "__main__":
 
     	totalScore = 0
     	highestScore = 0
-    	for i in range(5):
+    	for i in range(1000):
             score = simulator.play_game(False)
             if score > highestScore:
             	highestScore = score
             totalScore += score
 
-	resultForCurrentParameters = "Using alpha = {0}, gamma = {1}, epsilon = {2} and number of games = {3}\nFor playing 5 consecutive games, average score = {4}, highest score = {5}\n\n".format(alpha_value, gamma_value, epsilon_value, num_games, totalScore/5, highestScore)
+	resultForCurrentParameters = "Using alpha = {0}, gamma = {1}, epsilon = {2} and number of games = {3}\nFor playing 1000 consecutive games, average score = {4}, highest score = {5}\n\n".format(alpha_value, gamma_value, epsilon_value, num_games, totalScore/1000, highestScore)
         target.write(resultForCurrentParameters)
     target.close()
