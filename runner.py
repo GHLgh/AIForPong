@@ -79,6 +79,7 @@ if __name__ == "__main__":
             if score > highestScore:
             	highestScore = score
             totalScore += score
+	simulator.export_q_table("q_table.cfg")
 
 	resultForCurrentParameters = "Using alpha = {0}, gamma = {1}, epsilon = {2} and number of games = {3}\nFor playing 1000 consecutive games, average score = {4}, highest score = {5}\n\n".format(alpha_value, gamma_value, epsilon_value, num_games, totalScore/1000, highestScore)
         target.write(resultForCurrentParameters)

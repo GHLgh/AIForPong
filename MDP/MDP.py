@@ -87,19 +87,23 @@ class MDP:
             self.velocity_y = 1 if self.velocity_y > 0 else -1
 
         pass
+
+    def setStates(self, stage_x, stage_y):
+	self.stage_x = stage_x
+	self.stage_y = stage_y
     
     def discretize_state(self):
         '''
         Convert the current continuous state to a discrete state.
         '''
         # Your Code Goes Here!
-        dBallX = math.floor(12 * self.ball_x)
-        if dBallX >= 12:
-            dBallX = 12
+        dBallX = math.floor(self.stage_x * self.ball_x)
+        if dBallX >= self.stage_x:
+            dBallX = self.stage_x
         else:
             dBallX = int(dBallX)
 
-        dBallY = int(math.floor(12 * self.ball_y))
+        dBallY = int(math.floor(self.stage_y * self.ball_y))
 
         dVelocityX = 1 if self.velocity_x > 0 else -1
         if self.velocity_y > 0.015:
@@ -109,11 +113,12 @@ class MDP:
         else:
             dVelocityY = 0
 
-        dPaddleY = math.floor(12 * self.paddle_y / (1 - self.paddle_height))
+        dPaddleY = math.floor(self.stage_y * self.paddle_y / (1 - self.paddle_height))
         if self.paddle_y == 1 - self.paddle_height:
-            dPaddleY = 11
+            dPaddleY = self.stage_y -1
 
         return tuple([dBallX, dBallY, dVelocityX, dVelocityY, dPaddleY])
+
 
     def getReward(self):
         dReward = self.reward

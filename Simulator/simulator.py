@@ -36,7 +36,7 @@ class Simulator:
         self.p.draw(self.win)
         self.ball.draw(self.win)
         '''
-    def construct_q_table(self):
+    def construct_q_table(self, import_file):
 	config = ConfigParser.RawConfigParser()
 	config.read('stage.cfg')
 
@@ -69,11 +69,22 @@ class Simulator:
 	config.set('DiscreteState', 'velocity_x', str(self.velocity_x))
 	config.set('DiscreteState', 'velocity_y', str(self.velocity_y))
 
-	config.add.section("QTable")
+	config.add_section('QTable')
+
+	for ballX in range(self.stage_x):
+            for ballY in range(self.stage_y):
+                for velocityX in [-1, 1]:
+                    for velocityY in [-1, 0, 1]:
+                        for paddleY in range(self.stage_y):
+                            for action in range(3):
+				key = str(ballX) + ',' + str(ballY) + ',' + str(velocityX) + ',' + str(velocityY) + ',' + str(paddleY) + ',' + str(action)
+				value = str(self.QTable[tuple([ballX, ballY, velocityX, velocityY, paddleY, action])])
+				config.set('QTable', key, value)
+        config.set('QTable', str(-1), str(self.QTable[-1]))
 	
 
 	# Writing our configuration file to 'example.cfg'
-	with open('example.cfg', 'wb') as configfile:
+	with open(file_name, 'wb') as configfile:
 	    config.write(configfile)	
 
     def f_function(self, currentState, epsilonOn):
@@ -130,7 +141,9 @@ class Simulator:
         Simulate an actual game till the agent loses.
         '''
         # Your Code Goes Here!
+	#TODO add vx and vy
         environment = MDPMultiple()
+	environment.setStates(self.stage_x, self.stage_y)
         score = 0
         currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
         currentRewards = environment.getReward()
@@ -152,7 +165,7 @@ class Simulator:
             currentRewards = environment.getReward()
 
             # special casse to update special stage
-            if currentStates[0][0] == 12 or currentStates[1][0] == 12:
+            if currentStates[0][0] == self.stage_x or currentStates[1][0] == self.stage_x:
                 self.QTable[-1] += self.alpha_value * (currentRewards[0] + currentRewards[1] - self.QTable[-1])
 
             '''
@@ -169,6 +182,7 @@ class Simulator:
         '''
         # Your Code Goes Here!
         environment = MDP()
+	environment.setStates(self.stage_x, self.stage_y)
         score = 0
         currentState = environment.discretize_state()
         currentReward = environment.getReward()
@@ -185,7 +199,7 @@ class Simulator:
             currentReward = environment.getReward()
 
 	    # special casse to update special stage
-	    if currentState[0] == 12:
+	    if currentState[0] == self.stage_x:
 		self.QTable[-1] += self.alpha_value * (currentReward - self.QTable[-1])
 
             '''
@@ -197,7 +211,7 @@ class Simulator:
 
     def updateQTable(self, lastState, actionSelected, lastReward, currentState):
         QLast = self.QTable[lastState + (actionSelected,)]
-        if currentState[0] == 12:
+        if currentState[0] == self.stage_x:
             QOptimalCurrent = self.QTable[-1]
         else:
             QOptimalCurrent = self.QTable[currentState + (self.f_function(currentState,False),)]
