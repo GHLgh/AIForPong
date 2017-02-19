@@ -460,8 +460,6 @@ class GraphicsObject:
         self._reconfig("width", width)
 
     def draw(self, graphwin):
-        # type: (object) -> object
-
         """Draw the object in graphwin, which should be a GraphWin
         object.  A GraphicsObject may only be drawn into one
         window. Raises an error if attempt made to draw an object that

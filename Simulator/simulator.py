@@ -22,19 +22,6 @@ class Simulator:
         # Your Code Goes Here!
         self.construct_q_table(import_q_table)
 
-        self.win = GraphWin("Pong Game", 700, 700)
-        self.ball = Circle(Point(350, 350), 20)
-        msg = Text(Point(330, 25), "Pong Game")
-        msg.draw(self.win)
-        for i in range(0, 12):
-            for j in range(0, 12):
-                c = Rectangle(Point(50 + i * 50, 50 + j * 50), Point(100 + i * 50, 100 + j * 50))
-                c.draw(self.win)
-        self.p = Rectangle(Point(600, 250), Point(650, 400))
-        self.p.setFill("red")
-        self.p.draw(self.win)
-        self.ball.draw(self.win)
-
     def construct_q_table(self, import_file):
         config = ConfigParser.RawConfigParser()
         if (import_file == None):
@@ -235,13 +222,19 @@ class Simulator:
 
 
     def draw_gui(self, cur, pre):
+        if(self.win == None):
+            self.win = GraphWin("Pong Game", 700, 700)
+            self.ball = Circle(Point(350, 350), 20)
+            msg = Text(Point(330, 25), "Pong Game")
+            msg.draw(self.win)
+
         # Draw ball///
         self.ball.undraw()
-        self.ball = Circle(Point(50 + 25 * cur[0] + 25, 50 + 25 * cur[1] + 25), 20)
+        self.ball = Circle(Point(50 + 600/self.stage_x * cur[0] + 25, 50 + 600/self.stage_y * cur[1] + 25), 20)
         self.ball.draw(self.win)
         self.p.undraw()
 
         # Draw paddle
-        self.p = Rectangle(Point(600, 25 * cur[4]), Point(650, 25 * cur[4] + 120))
+        self.p = Rectangle(Point(600, 600/self.stage_y * cur[4]), Point(650, 600/self.stage_y * cur[4] + 120))
         self.p.setFill("red")
         self.p.draw(self.win)

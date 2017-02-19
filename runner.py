@@ -36,14 +36,15 @@ if __name__ == "__main__":
     num_games = 100000
     outputFileName = "results.txt"
     outputMode = 'a'
+    q_table_output = None
 
     multiple_paddles = False
 
     # parse arguments
     if (len(sys.argv) >= 2):
         if len(sys.argv) % 2 != 1:
-            print(
-            "Usage: python runner.py [-m single/double][-a alpha_value] [-g gamma_value] [-e epsilon_value] [-n num_games] [-f input_file] [-s file_to_save_qtable]")
+            print "Usage: python runner.py [-m single/double][-a alpha_value] [-g gamma_value] [-e epsilon_value] [-n num_games] [-f input_file] [-s file_to_save_qtable]"
+            print "-- This script is used to train an agent for pong using Q learning technique, feel free to change the configuration in stage.cfg to specify the size of discrete states"
             sys.exit()
         i = 1
         while i < len(sys.argv):
@@ -62,10 +63,11 @@ if __name__ == "__main__":
                 readInputFile(parameterList, sys.argv[i + 1])
                 outputFileName = "out_" + sys.argv[i + 1]
             if sys.argv[i] == "-s":
-                # TODO
-                i = i
+                q_table_output = sys.argv[i+1]
+
             i += 2
 
+    simulator = None
     parameterList.append((alpha_value, gamma_value, epsilon_value, num_games))
     target = open(outputFileName, outputMode)
     for parameters in parameterList:
@@ -77,16 +79,17 @@ if __name__ == "__main__":
         simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value)
         simulator.train_agent(multiple_paddles)
 
-    totalScore = 0
-    highestScore = 0
-    for i in range(1000):
-        score = simulator.play_game(False)
-        if score > highestScore:
-            highestScore = score
-        totalScore += score
-        simulator.export_q_table("q_table.cfg")
+        totalScore = 0
+        highestScore = 0
+        for i in range(1000):
+            score = simulator.play_game(False)
+            if score > highestScore:
+                highestScore = score
+            totalScore += score
 
         resultForCurrentParameters = "Using alpha = {0}, gamma = {1}, epsilon = {2} and number of games = {3}\nFor playing 1000 consecutive games, average score = {4}, highest score = {5}\n\n".format(
             alpha_value, gamma_value, epsilon_value, num_games, totalScore / 1000, highestScore)
         target.write(resultForCurrentParameters)
     target.close()
+    if q_table_output != None and simulator != None:
+        simulator.export_q_table(q_table_output)
