@@ -1,10 +1,11 @@
 from MDP.MDP import MDP
+from MDP.MDPMultiple import MDPMultiple
 #from graphics import *
 import random
 
 class Simulator:
     
-    def __init__(self, num_games=0, alpha_value=0, gamma_value=0, epsilon_value=0):
+    def __init__(self, num_games=0, alpha_value=0, gamma_value=0, epsilon_value=0, multiple_paddles = False):
         '''
         Setup the Simulator with the provided values.
         :param num_games - number of games to be trained on.
@@ -29,8 +30,8 @@ class Simulator:
                             for action in range(3):
                                 key = tuple([ballX, ballY, velocityX, velocityY, paddleY, action])
                                 self.QTable[key] = 0
-        self.QTable[-1] = -1
-        self.train_agent()
+        self.QTable[-1] = 0
+        self.train_agent(multiple_paddles)
 
         '''
         self.win = GraphWin("Pong Game", 700, 700)
@@ -74,19 +75,65 @@ class Simulator:
         else:
             return  actionSelectedWithGreedy
 
-    def train_agent(self):
+    def train_agent(self, multiplePaddles):
         '''
         Train the agent over a certain number of games.
         '''
         # Your Code Goes Here!
         totalScore = 0
+	continueOverTen = 0
+	count = -1
         for i in range(self.num_games):
-            score = self.play_game(True)
+            score = self.play_game(True) if multiplePaddles == False else self.play_game_paddles(True)
             totalScore += score
             if (i+1)%100 == 0:
+		if (totalScore/100) >= 10:
+		    continueOverTen += 1
+		    if continueOverTen >= 3 and count == -1:
+			count = i
                 print("Average score over last 100 runs: {0}. Ran {1} training, {2} runs remaining".format(totalScore/100,i+1, self.num_games - i-1))
                 totalScore = 0
+	print(count)
+	print("\n")
         pass
+
+    def play_game_paddles(self, training):
+        '''
+        Simulate an actual game till the agent loses.
+        '''
+        # Your Code Goes Here!
+        environment = MDPMultiple()
+        score = 0
+        currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
+        currentRewards = environment.getReward()
+
+        while(currentRewards[0] != -1 and currentRewards[1] != -1):
+            if currentRewards[0] == 1 or currentRewards[1] == 1:
+                score += 1
+
+            lastStates = currentStates
+            lastRewards = currentRewards
+            actionsSelected = [self.f_function(currentStates[0], training),self.f_function(currentStates[1], training)]
+            #print("S1:{0} A1:{1}; S2:{2} A2:{3}".format(currentStates[0], actionsSelected[0],currentStates[1], actionsSelected[1]))
+            environment.simulate_one_time_step(actionsSelected)
+            currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
+
+            self.updateQTable(lastStates[0], actionsSelected[0], lastRewards[0], currentStates[0])
+	    self.updateQTable(lastStates[1], actionsSelected[1], lastRewards[1], currentStates[1])
+
+            currentRewards = environment.getReward()
+
+            # special casse to update special stage
+            if currentStates[0][0] == 12 or currentStates[1][0] == 12:
+                self.QTable[-1] += self.alpha_value * (currentRewards[0] + currentRewards[1] - self.QTable[-1])
+
+            '''
+            if training == False:
+                time.sleep(0.05)
+                self.draw_gui(currentState, lastState)
+            '''
+	#print("End game\n")
+        return score
     
     def play_game(self, training):
         '''
@@ -108,6 +155,10 @@ class Simulator:
             currentState = environment.discretize_state()
             self.updateQTable(lastState, actionSelected, lastReward, currentState)
             currentReward = environment.getReward()
+
+	    # special casse to update special stage
+	    if currentState[0] == 12:
+		self.QTable[-1] += self.alpha_value * (currentReward - self.QTable[-1])
 
             '''
             if training == False:
