@@ -2,10 +2,11 @@ from MDP.MDP import MDP
 from MDP.MDPMultiple import MDPMultiple
 #from graphics import *
 import random
+import ConfigParser
 
 class Simulator:
     
-    def __init__(self, num_games=0, alpha_value=0, gamma_value=0, epsilon_value=0, multiple_paddles = False):
+    def __init__(self, num_games=0, alpha_value=0, gamma_value=0, epsilon_value=0, import_q_table = ''):
         '''
         Setup the Simulator with the provided values.
         :param num_games - number of games to be trained on.
@@ -19,18 +20,7 @@ class Simulator:
         self.gamma_val = gamma_value
         
         # Your Code Goes Here!
-        self.QTable = {}
-
-        # Init the Q Table to be all zeros
-        for ballX in range(12):
-            for ballY in range(12):
-                for velocityX in [-1, 1]:
-                    for velocityY in [-1, 0, 1]:
-                        for paddleY in range(12):
-                            for action in range(3):
-                                key = tuple([ballX, ballY, velocityX, velocityY, paddleY, action])
-                                self.QTable[key] = 0
-        self.QTable[-1] = 0
+	self.construct_q_table(import_q_table)
 
         '''
         self.win = GraphWin("Pong Game", 700, 700)
@@ -46,6 +36,45 @@ class Simulator:
         self.p.draw(self.win)
         self.ball.draw(self.win)
         '''
+    def construct_q_table(self):
+	config = ConfigParser.RawConfigParser()
+	config.read('stage.cfg')
+
+	# getfloat() raises an exception if the value is not a float
+	# getint() and getboolean() also do this for their respective types
+	self.stage_x = config.getint('DiscreteState', 'stage_x')
+	self.stage_y = config.getint('DiscreteState', 'stage_y')
+	self.velocity_x = config.getint('DiscreteState', 'velocity_x')
+        self.velocity_y = config.getint('DiscreteState', 'velocity_y')
+	#TODO enable velocity part
+	self.QTable = {}
+	# Init the Q Table to be all zeros
+	for ballX in range(self.stage_x):
+	    for ballY in range(self.stage_y):
+		for velocityX in [-1, 1]:
+		    for velocityY in [-1, 0, 1]:
+			for paddleY in range(self.stage_y):
+			    for action in range(3):
+				key = tuple([ballX, ballY, velocityX, velocityY, paddleY, action])
+				self.QTable[key] = 0
+	self.QTable[-1] = 0 
+	pass   
+
+    def export_q_table(self, file_name):
+	config = ConfigParser.RawConfigParser()
+
+	config.add_section('DiscreteState')
+	config.set('DiscreteState', 'stage_x', str(self.stage_x))
+	config.set('DiscreteState', 'stage_y', str(self.stage_y))
+	config.set('DiscreteState', 'velocity_x', str(self.velocity_x))
+	config.set('DiscreteState', 'velocity_y', str(self.velocity_y))
+
+	config.add.section("QTable")
+	
+
+	# Writing our configuration file to 'example.cfg'
+	with open('example.cfg', 'wb') as configfile:
+	    config.write(configfile)	
 
     def f_function(self, currentState, epsilonOn):
         '''
