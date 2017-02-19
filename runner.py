@@ -39,7 +39,7 @@ if __name__ == "__main__":
     if(len(sys.argv) >= 2):
 	if len(sys.argv)%2 != 1:
 	    print("Usage: python runner.py [-m single/double][-a alpha_value] [-g gamma_value] [-e epsilon_value] [-n num_games] [-f input_file] [-s file_to_save_qtable]")
-	    sys.exit;
+	    sys.exit();
 	i = 1
 	while i < len(sys.argv):
 	    if sys.argv[i] == "-m" and sys.argv[i+1] == "double":
@@ -60,8 +60,8 @@ if __name__ == "__main__":
 		#TODO
 		i = i
 	    i+=2
-	parameterList.append((alpha_value, gamma_value, epsilon_value, num_games));
 
+    parameterList.append((alpha_value, gamma_value, epsilon_value, num_games));
     target = open(outputFileName, outputMode)
     for parameters in parameterList:
 	alpha_value = parameters[0]
