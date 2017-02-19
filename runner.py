@@ -31,24 +31,36 @@ if __name__ == "__main__":
     epsilon_value = 0.04
     num_games = 100000
     outputFileName = "results.txt"
-    outputMode = 'w'
+    outputMode = 'a'
 
-    two = False
+    multiple_paddles = False
 
-    if(len(sys.argv) != 2):
-	outputMode = 'a'
-	if(6 >= len(sys.argv) >= 5):
-	    alpha_value = float(sys.argv[1])
-            gamma_value = float(sys.argv[2])
-            epsilon_value = float(sys.argv[3])
-	    num_games = int(sys.argv[4])
+    # parse arguments
+    if(len(sys.argv) >= 2):
+	if len(sys.argv)%2 != 1:
+	    print("Usage: python runner.py [-m single/double][-a alpha_value] [-g gamma_value] [-e epsilon_value] [-n num_games] [-f input_file] [-s file_to_save_qtable]")
+	    sys.exit;
+	i = 1
+	while i < len(sys.argv):
+	    if sys.argv[i] == "-m" and sys.argv[i+1] == "double":
+		multiple_paddles = True;
+	    if sys.argv[i] == "-a":
+		alpha_value = float(sys.argv[i+1])
+	    if sys.argv[i] == "-g":
+        	gamma_value = float(sys.argv[i+1])
+	    if sys.argv[i] == "-e":
+                epsilon_value = float(sys.argv[i+1])
+	    if sys.argv[i] == "-n":
+                num_games = int(sys.argv[i+1])
+	    if sys.argv[i] == "-f":
+		outputMode = 'w'
+		readInputFile(parameterList, sys.argv[i+1]);
+	        outputFileName = "out_" + sys.argv[i+1];
+	    if sys.argv[i] == "-s":
+		#TODO
+		i = i
+	    i+=2
 	parameterList.append((alpha_value, gamma_value, epsilon_value, num_games));
-	if len(sys.argv) == 6:
-	    two = True
-	    #outputFileName = sys.argv[5]
-    elif len(sys.argv) == 2:
-	readInputFile(parameterList, sys.argv[1]);
-	outputFileName = "out_" + sys.argv[1];
 
     target = open(outputFileName, outputMode)
     for parameters in parameterList:
@@ -56,7 +68,7 @@ if __name__ == "__main__":
 	gamma_value = parameters[1]
 	epsilon_value = parameters[2]
 	num_games = parameters[3]
-    	simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value, two)
+    	simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value, multiple_paddles)
 
     	totalScore = 0
     	highestScore = 0
