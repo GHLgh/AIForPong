@@ -1,6 +1,6 @@
 from MDP.MDP import MDP
 from MDP.MDPMultiple import MDPMultiple
-#from graphics import *
+from graphics import *
 import random
 import ConfigParser
 
@@ -22,7 +22,7 @@ class Simulator:
         # Your Code Goes Here!
 	self.construct_q_table(import_q_table)
 
-        '''
+        
         self.win = GraphWin("Pong Game", 700, 700)
         self.ball = Circle(Point(350, 350), 20)
         msg = Text(Point(330, 25), "Pong Game")
@@ -35,13 +35,14 @@ class Simulator:
         self.p.setFill("red")
         self.p.draw(self.win)
         self.ball.draw(self.win)
-        '''
+        
     def construct_q_table(self, import_file):
 	config = ConfigParser.RawConfigParser()
-	config.read('stage.cfg')
+	if(import_file == ''):
+	    config.read('stage.cfg')
+	else:
+	    config.read(import_file)
 
-	# getfloat() raises an exception if the value is not a float
-	# getint() and getboolean() also do this for their respective types
 	self.stage_x = config.getint('DiscreteState', 'stage_x')
 	self.stage_y = config.getint('DiscreteState', 'stage_y')
 	self.velocity_x = config.getint('DiscreteState', 'velocity_x')
@@ -56,8 +57,15 @@ class Simulator:
 			for paddleY in range(self.stage_y):
 			    for action in range(3):
 				key = tuple([ballX, ballY, velocityX, velocityY, paddleY, action])
-				self.QTable[key] = 0
-	self.QTable[-1] = 0 
+				if import_file == '':
+				    self.QTable[key] = 0
+				else:
+				    key_in_string = str(ballX) + ',' + str(ballY) + ',' + str(velocityX) + ',' + str(velocityY) + ',' + str(paddleY) + ',' + str(action)
+				    self.QTable[key] = config.getfloat('QTable', key_in_string)
+	if import_file == '':
+	    self.QTable[-1] = 0 
+	else:
+	    self.QTable[-1] = config.getfloat('QTable', str(-1))
 	pass   
 
     def export_q_table(self, file_name):
@@ -176,7 +184,7 @@ class Simulator:
 	#print("End game\n")
         return score
     
-    def play_game(self, training):
+    def play_game(self, training, demo=False):
         '''
         Simulate an actual game till the agent loses.
         '''
@@ -202,11 +210,11 @@ class Simulator:
 	    if currentState[0] == self.stage_x:
 		self.QTable[-1] += self.alpha_value * (currentReward - self.QTable[-1])
 
-            '''
-            if training == False:
+            
+            if demo == False:
                 time.sleep(0.05)
                 self.draw_gui(currentState, lastState)
-            '''
+            
         return score
 
     def updateQTable(self, lastState, actionSelected, lastReward, currentState):
@@ -220,7 +228,7 @@ class Simulator:
         pass
 
     def draw_gui(self, cur, pre):
-        '''
+        
         x = cur[0] - pre[0]
         y = cur[1] - pre[1]
 
@@ -234,4 +242,3 @@ class Simulator:
         self.p = Rectangle(Point(600, 50 * cur[4]), Point(650, 50 * cur[4] + 120))
         self.p.setFill("red")
         self.p.draw(self.win)
-        '''
