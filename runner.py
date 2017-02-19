@@ -68,7 +68,9 @@ if __name__ == "__main__":
 	gamma_value = parameters[1]
 	epsilon_value = parameters[2]
 	num_games = parameters[3]
+
     	simulator = Simulator(num_games, alpha_value, gamma_value, epsilon_value, multiple_paddles)
+	simulator.train_agent(multiple_paddles)
 
     	totalScore = 0
     	highestScore = 0

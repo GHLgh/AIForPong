@@ -31,7 +31,6 @@ class Simulator:
                                 key = tuple([ballX, ballY, velocityX, velocityY, paddleY, action])
                                 self.QTable[key] = 0
         self.QTable[-1] = 0
-        self.train_agent(multiple_paddles)
 
         '''
         self.win = GraphWin("Pong Game", 700, 700)
