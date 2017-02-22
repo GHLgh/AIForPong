@@ -24,7 +24,7 @@ class Simulator:
 
     def construct_q_table(self, import_file):
         config = ConfigParser.RawConfigParser()
-        if (import_file == None):
+        if import_file is None:
             config.read('stage.cfg')
         else:
             config.read(import_file)
@@ -33,6 +33,13 @@ class Simulator:
         self.stage_y = config.getint('DiscreteState', 'stage_y')
         self.velocity_x = config.getint('DiscreteState', 'velocity_x')
         self.velocity_y = config.getint('DiscreteState', 'velocity_y')
+        self.x_list = []
+        self.y_list = []
+        for i in range(self.velocity_x):
+            self.x_list.append(i+1)
+            self.x_list.append(-1*(i+1))
+        for i in range(-1 * self.velocity_y,self.velocity_y+1):
+            self.y_list.append(i)
 
         # TODO enable velocity part
         self.QTable = {}
@@ -40,12 +47,12 @@ class Simulator:
         # Init the Q Table to be all zeros
         for ballX in range(self.stage_x):
             for ballY in range(self.stage_y):
-                for velocityX in [-1, 1]:
-                    for velocityY in [-1, 0, 1]:
+                for velocityX in self.x_list:
+                    for velocityY in self.y_list:
                         for paddleY in range(self.stage_y):
                             for action in range(3):
                                 key = tuple([ballX, ballY, velocityX, velocityY, paddleY, action])
-                                if import_file == None:
+                                if import_file is None:
                                     self.QTable[key] = 0
                                 else:
                                     key_in_string = str(ballX) + ',' + str(ballY) + ',' + str(velocityX) + ',' + str(
@@ -71,8 +78,8 @@ class Simulator:
 
         for ballX in range(self.stage_x):
             for ballY in range(self.stage_y):
-                for velocityX in [-1, 1]:
-                    for velocityY in [-1, 0, 1]:
+                for velocityX in self.x_list:
+                    for velocityY in self.y_list:
                         for paddleY in range(self.stage_y):
                             for action in range(3):
                                 key = str(ballX) + ',' + str(ballY) + ',' + str(velocityX) + ',' + str(
@@ -144,7 +151,7 @@ class Simulator:
         # Your Code Goes Here!
         # TODO add vx and vy
         environment = MDPMultiple()
-        environment.setStates(self.stage_x, self.stage_y)
+        environment.setStates(self.stage_x, self.stage_y, self.velocity_x, self.velocity_y)
         score = 0
         currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
         currentRewards = environment.getReward()
@@ -183,7 +190,7 @@ class Simulator:
         '''
         # Your Code Goes Here!
         environment = MDP()
-        environment.setStates(self.stage_x, self.stage_y)
+        environment.setStates(self.stage_x, self.stage_y, self.velocity_x, self.velocity_y)
         score = 0
         currentState = environment.discretize_state()
         currentReward = environment.getReward()
@@ -220,6 +227,47 @@ class Simulator:
         lastReward + self.gamma_val * QOptimalCurrent - QLast)
         pass
 
+    """
+    def play_game_pve(self):
+        '''
+        Simulate an actual game till the agent loses.
+        '''
+        # Your Code Goes Here!
+        # TODO add vx and vy and make it into pve version
+        environment = MDPMultiple()
+        environment.setStates(self.stage_x, self.stage_y)
+        score = 0
+        currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
+        currentRewards = environment.getReward()
+
+        while (currentRewards[0] != -1 and currentRewards[1] != -1):
+            if currentRewards[0] == 1 or currentRewards[1] == 1:
+                score += 1
+
+            lastStates = currentStates
+            lastRewards = currentRewards
+            actionsSelected = [self.f_function(currentStates[0], False), self.f_function(currentStates[1], False)]
+            # print("S1:{0} A1:{1}; S2:{2} A2:{3}".format(currentStates[0], actionsSelected[0],currentStates[1], actionsSelected[1]))
+            environment.simulate_one_time_step(actionsSelected)
+            currentStates = [environment.discretize_state(0), environment.discretize_state(1)]
+
+            self.updateQTable(lastStates[0], actionsSelected[0], lastRewards[0], currentStates[0])
+            self.updateQTable(lastStates[1], actionsSelected[1], lastRewards[1], currentStates[1])
+
+            currentRewards = environment.getReward()
+
+            # special casse to update special stage
+            if currentStates[0][0] == self.stage_x or currentStates[1][0] == self.stage_x:
+                self.QTable[-1] += self.alpha_value * (currentRewards[0] + currentRewards[1] - self.QTable[-1])
+
+            '''
+            if training == False:
+                time.sleep(0.05)
+                self.draw_gui(currentState, lastState)
+            '''
+        # print("End game\n")
+        return score
+    """
 
     def draw_gui(self, cur, pre):
         if(self.win == None):

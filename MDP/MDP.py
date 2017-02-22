@@ -88,9 +88,11 @@ class MDP:
 
         pass
 
-    def setStates(self, stage_x, stage_y):
-	self.stage_x = stage_x
-	self.stage_y = stage_y
+    def setStates(self, stage_x, stage_y, stage_vx, stage_vy):
+        self.stage_x = stage_x
+        self.stage_y = stage_y
+        self.stage_vx = stage_vx
+        self.stage_vy = stage_vy
     
     def discretize_state(self):
         '''
@@ -106,10 +108,9 @@ class MDP:
         dBallY = int(math.floor(self.stage_y * self.ball_y))
 
         dVelocityX = 1 if self.velocity_x > 0 else -1
-        if self.velocity_y > 0.015:
-            dVelocityY = 1
-        elif self.velocity_y < -0.015:
-            dVelocityY = -1
+        dVelocityX = dVelocityX * self.stage_vx
+        if math.fabs(self.velocity_y) > 0.015:
+            dVelocityY = int(self.velocity_y * self.stage_vy)
         else:
             dVelocityY = 0
 
