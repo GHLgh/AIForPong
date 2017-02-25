@@ -97,31 +97,36 @@ class MDPMultiple:
             self.velocity_y = 1 if self.velocity_y > 0 else -1
 
         pass
+
+    def setStates(self, stage_x, stage_y, stage_vx, stage_vy):
+        self.stage_x = stage_x
+        self.stage_y = stage_y
+        self.stage_vx = stage_vx
+        self.stage_vy = stage_vy
     
     def discretize_state(self, paddle_index):
         '''
         Convert the current continuous state to a discrete state.
         '''
         # Your Code Goes Here!
-        dBallX = math.floor(12 * self.ball_x)
-        if dBallX >= 12 or dBallX <= -1:
-            dBallX = 12
+        dBallX = math.floor(self.stage_x * self.ball_x)
+        if dBallX >= self.stage_x or dBallX <= -1:
+            dBallX = self.stage_x
         else:
-            dBallX = int(math.fabs(dBallX + (paddle_index-1) * 11))
+            dBallX = int(math.fabs(dBallX + (paddle_index-1) * (self.stage_x-1)))
 
-        dBallY = int(math.floor(12 * self.ball_y))
+        dBallY = int(math.floor(self.stage_y * self.ball_y))
 
         dVelocityX = 1 if (self.velocity_x * ((2 * paddle_index)-1)) > 0 else -1
-        if self.velocity_y > 0.015:
-            dVelocityY = 1
-        elif self.velocity_y < -0.015:
-            dVelocityY = -1
+        dVelocityX = int(dVelocityX * self.stage_vx)
+        if math.fabs(self.velocity_y) > 0.015:
+            dVelocityY = int(self.velocity_y * self.stage_vy)
         else:
             dVelocityY = 0
 
-        dPaddleY = int(math.floor(12 * self.paddles[paddle_index] / (1 - self.paddle_height)))
+        dPaddleY = int(math.floor(self.stage_y * self.paddles[paddle_index] / (1 - self.paddle_height)))
         if self.paddles[paddle_index] == 1 - self.paddle_height:
-            dPaddleY = 11
+            dPaddleY = self.stage_y - 1
 
         return tuple([dBallX, dBallY, dVelocityX, dVelocityY, dPaddleY])
 

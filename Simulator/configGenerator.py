@@ -1,7 +1,7 @@
 import ConfigParser
 
 if __name__ == "__main__":
-    onfig = ConfigParser.RawConfigParser()
+    config = ConfigParser.RawConfigParser()
 
 # When adding sections or items, add them in the reverse order of
 # how you want them to be displayed in the actual file.
@@ -11,13 +11,11 @@ if __name__ == "__main__":
 # when attempting to write to a file or when you get it in non-raw
 # mode. SafeConfigParser does not allow such assignments to take place.
     config.add_section('DiscreteState')
-    config.set('DiscreteState', 'an_int', '15')
-    config.set('DiscreteState', 'a_bool', 'true')
-    config.set('DiscreteState', 'a_float', '3.1415')
-    config.set('DiscreteState', 'baz', 'fun')
-    config.set('DiscreteState', 'bar', 'Python')
-    config.set('DiscreteState', 'foo', '%(bar)s is %(baz)s!')
+    config.set('DiscreteState', 'stage_x', '12')
+    config.set('DiscreteState', 'stage_y', '12')
+    config.set('DiscreteState', 'velocity_x', '1')
+    config.set('DiscreteState', 'velocity_y', '1')
 
 # Writing our configuration file to 'example.cfg'
-with open('example.cfg', 'wb') as configfile:
-    config.write(configfile)
+    with open('stage.cfg', 'wb') as configfile:
+        config.write(configfile)
