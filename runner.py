@@ -27,6 +27,12 @@ if __name__ == "__main__":
 
         return True
 
+    def printUsage():
+	print "Usage: python runner.py [-h (usage)][-m single/double][-a alpha_value] [-g gamma_value] [-e epsilon_value] [-n num_games] [-f input_file] [-s file_to_save_qtable]"
+	print "-- This script is used to train an agent for pong using Q learning technique, feel free to change the configuration in stage.cfg to specify the size of discrete states"  
+	sys.exit()
+	pass
+
 
     # process user input, or use default values if user doesn't specify parameters
     parameterList = []
@@ -43,11 +49,11 @@ if __name__ == "__main__":
     # parse arguments
     if (len(sys.argv) >= 2):
         if len(sys.argv) % 2 != 1:
-            print "Usage: python runner.py [-m single/double][-a alpha_value] [-g gamma_value] [-e epsilon_value] [-n num_games] [-f input_file] [-s file_to_save_qtable]"
-            print "-- This script is used to train an agent for pong using Q learning technique, feel free to change the configuration in stage.cfg to specify the size of discrete states"
-            sys.exit()
+	    printUsage()
         i = 1
         while i < len(sys.argv):
+	    if sys.argv[i] == "-h" or sys.argv[i+1] == "-h":
+		printUsage()
             if sys.argv[i] == "-m" and sys.argv[i + 1] == "double":
                 multiple_paddles = True
             if sys.argv[i] == "-a":

@@ -4,3 +4,9 @@ For playing 1000 consecutive games, average score = 33, highest score = 223
 Using alpha = 0.4, gamma = 0.95, epsilon = 0.04 and number of games = 100
 For playing 1000 consecutive games, average score = 1, highest score = 4
 
+Using alpha = 0.4, gamma = 0.95, epsilon = 0.04 and number of games = 100000
+For playing 1000 consecutive games, average score = 6, highest score = 46
+
+Using alpha = 0.4, gamma = 0.95, epsilon = 0.04 and number of games = 100000
+For playing 1000 consecutive games, average score = 12, highest score = 77
+

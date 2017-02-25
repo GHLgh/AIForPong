@@ -1,6 +1,7 @@
 from MDP.MDP import MDP
 from MDP.MDPMultiple import MDPMultiple
-from graphics import *
+#from graphics import *
+import time
 import random
 import ConfigParser
 
@@ -53,7 +54,7 @@ class Simulator:
                             for action in range(3):
                                 key = tuple([ballX, ballY, velocityX, velocityY, paddleY, action])
                                 if import_file is None:
-                                    self.QTable[key] = 0
+                                    self.QTable[key] = random.random()
                                 else:
                                     key_in_string = str(ballX) + ',' + str(ballY) + ',' + str(velocityX) + ',' + str(
                                         velocityY) + ',' + str(paddleY) + ',' + str(action)
@@ -212,7 +213,7 @@ class Simulator:
 
             if demo == True:
                 time.sleep(0.05)
-                self.draw_gui(currentState, lastState)
+                #self.draw_gui(currentState, lastState)
         return score
 
 
@@ -268,7 +269,7 @@ class Simulator:
         # print("End game\n")
         return score
     """
-
+"""
     def draw_gui(self, cur, pre):
         if(self.win == None):
             self.win = GraphWin("Pong Game", 700, 700)
@@ -286,3 +287,4 @@ class Simulator:
         self.p = Rectangle(Point(600, 600/self.stage_y * cur[4]), Point(650, 600/self.stage_y * cur[4] + 120))
         self.p.setFill("red")
         self.p.draw(self.win)
+"""
